@@ -1,0 +1,133 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta http-equiv="content-type" content="text/html; charset=utf-8"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"><meta content="telephone=no" name="format-detection"><meta name="description"><title>Redis | 张昭林的个人站</title><link rel="stylesheet" type="text/css" href="/css/style.css?v=0.0.0"><link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/normalize/6.0.0/normalize.min.css"><link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/pure/0.6.2/pure-min.css"><link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/pure/0.6.2/grids-responsive-min.css"><link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css"><script type="text/javascript" src="//cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script><link rel="Shortcut Icon" type="image/x-icon" href="/favicon.ico"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="apple-touch-icon-precomposed" href="/apple-touch-icon.png"></head><body><div class="body_container"><div id="header"><div class="site-name"><h1 class="hidden">Redis</h1><a id="logo" href="/.">张昭林的个人站</a><p class="description">Only in the darkness can you see the stars</p></div><div id="nav-menu"><a href="/." class="current"><i class="fa fa-home"> 首页</i></a><a href="/archives/"><i class="fa fa-archive"> 归档</i></a><a href="/history/"><i class="fa fa-book"> 生涯</i></a><a href="/about/"><i class="fa fa-user"> 关于</i></a><a href="/atom.xml"><i class="fa fa-rss"> 订阅</i></a></div></div><div id="layout" class="pure-g"><div class="pure-u-1 pure-u-md-3-4"><div class="content_container"><div class="post"><h1 class="post-title">Redis</h1><div class="post-meta">Nov 22, 2016<span> | </span><span class="category"><a href="/categories/技术/">技术</a></span><script src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js" async></script><span id="busuanzi_container_page_pv"> | <span id="busuanzi_value_page_pv"></span><span> 阅读</span></span></div><div class="post-content"><p>Linux中<code>~</code>代表当前用户的home</p>
+<p>redis关闭两种方式：</p>
+<ol>
+<li>在任务管理器<code>ps aux|grep redis</code>查看redis的进程，然后使用<code>kill pid</code>关闭</li>
+<li>使用<code>./redis-cli shutdown</code></li>
+</ol>
+<h3 id="物种数据类型"><a href="#物种数据类型" class="headerlink" title="物种数据类型"></a>物种数据类型</h3><ol>
+<li>set/get<ul>
+<li>set方法 创建一个key Value <code>set a 1</code>,就是创建一个key为a，value为1的集合</li>
+<li>get方法，获取值，<code>get a</code>,获取a中的值为1</li>
+<li>自增：<code>incr key</code>，用于获取网页浏览量</li>
+<li>自减：<code>decr key</code></li>
+<li>删除：<code>del key</code></li>
+</ul>
+</li>
+<li><p>String</p>
+<ul>
+<li>redis中的值都是String类型</li>
+</ul>
+</li>
+<li><p>HashSet</p>
+<ul>
+<li>添加：<code>hset hash1 field1 a</code>,添加一个key为hash1 value为一个集合key为field1，value为a</li>
+<li>获取：<code>hget hash1 field1</code> ， 获取hash1中的key为field 的值为a</li>
+<li>查看key：<code>hkeys hash1</code></li>
+<li>查看值：<code>hvals hash1</code></li>
+<li>删除field：<code>hdel hash1 field</code></li>
+</ul>
+</li>
+<li><p>List:适合做一些排队的相关处理，有顺序，可重复</p>
+<ul>
+<li>添加：从左添加<code>lpush list1 1 2  3 4 5 6</code> ,从右添加<code>rpush list1 a b c d e</code></li>
+<li>查看：<code>lrange list1 0 -1</code> 结果为<code>6 5 4 3 2 1</code>开始添加<code>a b c d e</code></li>
+<li>获取：<code>lpop list1</code> 注意：获取以后就从list中移除</li>
+</ul>
+</li>
+<li><p>Set集合：用于计算集合运算，元素无顺序，不能重复</p>
+<ul>
+<li>添加：<code>sadd seta a ab a ss b ad</code>和<code>sadd setb q w e a b ss</code></li>
+<li>删除：<code>srem seta a</code></li>
+<li>查看：<code>smembers seta</code></li>
+<li>取差集：<code>sdiff seta setb</code> 就是除去seta 和setb中相同的部分后剩下的seta中的元素</li>
+<li>取交集：<code>sinter seta setb</code></li>
+<li>取并集：<code>sunion seta setb</code></li>
+</ul>
+</li>
+<li><p>SortedSet(zset)：有顺序，不能重复，能用list替代就用list</p>
+<ul>
+<li>添加：<code>zadd zset1 2 a 5 b 6 d</code></li>
+<li>查看：<code>zrange zset1 0 -1</code></li>
+<li>删除：<code>zrem zset1 a</code></li>
+<li>排序：<code>zrevrange zset1 0 -1</code></li>
+<li>查看带有分数：<code>zrange zset1 0 -1 whitscores</code></li>
+</ul>
+</li>
+</ol>
+<p><strong>Key命令</strong></p>
+<ol>
+<li>设置过期时间<ul>
+<li><code>expire key1 100</code></li>
+<li>查询过期时间还剩<code>ttl key1</code></li>
+<li>如果显示-1，代表已经过期，如果显示-2则表示不存在</li>
+</ul>
+</li>
+<li>Persist key：清除key的过期时间，让key持久化</li>
+</ol>
+<h3 id="Redis的持久化方案"><a href="#Redis的持久化方案" class="headerlink" title="Redis的持久化方案"></a>Redis的持久化方案</h3><ul>
+<li>Redis的所有数据都是保存到内存中的</li>
+<li>Rdb：快照形式，定期把内存中当前时刻的数据保存到磁盘。Redis默认支持的持久化方案</li>
+<li>aof：append only file 把所有对redis数据库操作的命令，增删改操作的命令，保存到数据库中，数据库恢复时把所有的命令执行一遍即可</li>
+</ul>
+<h3 id="使用Redis搭建集群"><a href="#使用Redis搭建集群" class="headerlink" title="使用Redis搭建集群"></a>使用Redis搭建集群</h3><p><strong>redis-cluster架构图</strong></p>
+<p><img src="/img/redis/redis_cluster.jpg" alt="redis_cluster"></p>
+<p><strong>redis_cluster投票：容器</strong></p>
+<p><img src="/img/redis/cluster_rongcuo.jpg" alt="cluster_rongcuo"></p>
+<p><strong>架构细节</strong></p>
+<ol>
+<li>所有的redis节点彼此互联<code>(PING-PONG机制)</code>,内部使用二进制协议优化传输速度和带宽.</li>
+<li>节点的fail是通过集群中超过半数的节点检测失效时才生效.</li>
+<li>客户端与redis节点直连,不需要中间<code>proxy层</code>.客户端不需要连接集群所有节点,连接集群中任何一个可用节点即可</li>
+<li>redis-cluster把所有的物理节点映射到<code>[0-16383]slot</code>上,cluster 负责维护<code>node&lt;-&gt;slot&lt;-&gt;value</code></li>
+</ol>
+<p><strong>Redis 集群中内置了 <code>16384</code>个哈希槽，当需要在 Redis 集群中放置一个 <code>key-value</code>时，redis 先对 key 使用 <code>crc16 算法</code>算出一个结果，然后把结果对 <code>16384</code>求余数，这样每个 key 都会对应一个编号在 <code>0-16383</code>之间的哈希槽，redis 会根据节点数量大致均等的将哈希槽映射到不同的节点</strong></p>
+<p><strong>进行集群搭建</strong></p>
+<blockquote>
+<p>Redis 集群至少应该有三个节点。要保证集群的高可用，需要每个节点有一个备份机。<br>Redis集群至少需要6台服务器。<br>搭建伪分布式。可以使用一台虚拟机运行6个redis实例。需要修改redis的端口号7001-7006</p>
+</blockquote>
+<p><strong>集群搭建环境</strong></p>
+<ol>
+<li><p>使用ruby脚本搭建集群，需要ruby的运行环境</p>
+<ul>
+<li>安装ruby <code>yum install ruby`` yum install rubygems</code></li>
+</ul>
+</li>
+<li><p>安装ruby脚本运行使用的三方包<code>[root@localhost ~]# gem install redis-3.0.0.gem</code></p>
+</li>
+</ol>
+<p><strong>搭建步骤</strong></p>
+<ol>
+<li>需要6台服务器，这里使用6台redis，搭建伪分布式，端口号从7001到7006，并且改变<code>redis.confg</code>中的r<code>cluster-enable yes</code></li>
+<li>启动每个redis实例，可以创建一个批处理 <code>start-all.sh</code></li>
+<li><p>使用ruby脚本搭建集群</p>
+<figure class="highlight ruby"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">./redis-trib.rb create --replicas <span class="number">1</span> <span class="number">192.168</span>.<span class="number">25.131</span><span class="symbol">:</span><span class="number">7001</span> <span class="number">192.168</span>.<span class="number">25.131</span><span class="symbol">:</span><span class="number">7002</span> <span class="number">192.168</span>.<span class="number">25.131</span><span class="symbol">:</span><span class="number">7003</span> <span class="number">192.168</span>.<span class="number">25.131</span><span class="symbol">:</span><span class="number">7004</span> <span class="number">192.168</span>.<span class="number">25.131</span><span class="symbol">:</span><span class="number">7005</span> <span class="number">192.168</span>.<span class="number">25.131</span><span class="symbol">:</span><span class="number">7006</span></div></pre></td></tr></table></figure>
+</li>
+</ol>
+<p><strong>集群使用方法</strong></p>
+<ol>
+<li>连接集群<code>[root@localhost redis-cluster]# redis01/redis-cli -p 7002 -c</code> c代表连接的是redis集群</li>
+<li>即可使用单机redis进行操作了</li>
+</ol>
+<h3 id="Jedis"><a href="#Jedis" class="headerlink" title="Jedis"></a>Jedis</h3><p><strong>链接单机版</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Jedis</span></span>&#123;</div><div class="line">  <span class="meta">@Test</span></div><div class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">jedis</span><span class="params">()</span></span>&#123;</div><div class="line">    <span class="comment">/* 1.  创建一个Jedis对象，需要指定服务端的ip及端口*/</span></div><div class="line">    Jedis jedis = <span class="keyword">new</span> Jedis(<span class="string">"192.168.25.131"</span>,<span class="number">6379</span>);</div><div class="line">    <span class="comment">/*2.  使用Jedis对象操作数据库，每个redis命令对应一个方法*/</span></div><div class="line">    String string = jedis.hget(<span class="string">"ha"</span>,<span class="string">"b"</span>);</div><div class="line">    <span class="comment">/*3.  打印结果*/</span></div><div class="line">    System.out.println(string);</div><div class="line">    <span class="comment">/*4.  关闭Jedis*/</span></div><div class="line">    jedis.close();</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p><strong>连接池单机版使用连接池</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Jedis</span></span>&#123;</div><div class="line">    <span class="meta">@Test</span></div><div class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">jedisPool</span><span class="params">()</span></span>&#123;</div><div class="line">        <span class="comment">/* 1.  创建一个JedisPool对象。需要指定服务端的ip及端口*/</span></div><div class="line">        JedisPool jedisPool = <span class="keyword">new</span> JedisPool(<span class="string">"192.168.25.131"</span>,<span class="number">6379</span>);</div><div class="line">        <span class="comment">/* 2.  从JedisPool中获得Jedis对象*/</span></div><div class="line">        Jedis jedis = jedisPool.getResource();</div><div class="line">        <span class="comment">/*3.  使用Jedis操作redis服务器*/</span></div><div class="line">        String string = jedis.hget(<span class="string">"ha"</span>,<span class="string">"b"</span>);</div><div class="line">        System.out.println(string);</div><div class="line">        <span class="comment">/* 4.  操作完毕后关闭jedis对象，连接池回收资源*/</span></div><div class="line">        jedis.close();</div><div class="line">        <span class="comment">/* 5.  关闭JedisPool对象*/</span></div><div class="line">        jedisPool.close();</div><div class="line">    &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<p><strong>连接集群版</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div><div class="line">15</div><div class="line">16</div><div class="line">17</div><div class="line">18</div><div class="line">19</div><div class="line">20</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">JedisCluster</span></span>&#123;</div><div class="line">  <span class="meta">@Test</span></div><div class="line">  <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">jedisCluster</span><span class="params">()</span></span>&#123;</div><div class="line">    <span class="comment">/* 1.  使用JedisCluster对象，需要一个Set&lt;HostPort&gt;参数。Redis节点的列表*/</span></div><div class="line">    Set&lt;HostAndPort&gt; node = <span class="keyword">new</span> HashSet();</div><div class="line">    <span class="comment">/* 2.  直接使用JedisCluster对象操作redis。在系统中单例存在*/</span></div><div class="line">    node.add(<span class="string">"192.168.25.131"</span>,<span class="number">7001</span>);</div><div class="line">    node.add(<span class="string">"192.168.25.131"</span>,<span class="number">7002</span>);</div><div class="line">    node.add(<span class="string">"192.168.25.131"</span>,<span class="number">7003</span>);</div><div class="line">    node.add(<span class="string">"192.168.25.131"</span>,<span class="number">7004</span>);</div><div class="line">    node.add(<span class="string">"192.168.25.131"</span>,<span class="number">7005</span>);</div><div class="line">    node.add(<span class="string">"192.168.25.131"</span>,<span class="number">7006</span>);</div><div class="line">    JedisCluster jedisCluster = <span class="keyword">new</span> JedisCluster(node);</div><div class="line">    jedisCluster.set(<span class="string">"haha"</span>,<span class="string">"hehe"</span>);</div><div class="line">    <span class="comment">/* 3.  打印结果*/</span></div><div class="line">    System.out.println(jedisCluster.get(<span class="string">"haha"</span>));</div><div class="line">    <span class="comment">/* 4.  系统关闭前，关闭JedisCluster对象*/</span></div><div class="line">    jedisCluster.close();</div><div class="line">  &#125;</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+<h3 id="项目中添加缓存"><a href="#项目中添加缓存" class="headerlink" title="项目中添加缓存"></a>项目中添加缓存</h3><p><strong>添加缓存不能影响到业务逻辑</strong></p>
+<ol>
+<li><p>查询数据库之前要先查询缓存</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div><div class="line">6</div><div class="line">7</div><div class="line">8</div><div class="line">9</div><div class="line">10</div><div class="line">11</div><div class="line">12</div><div class="line">13</div><div class="line">14</div></pre></td><td class="code"><pre><div class="line"><span class="meta">@AutoWired</span></div><div class="line">JedisClient jedisClient;</div><div class="line">  <span class="keyword">try</span> &#123;</div><div class="line">  <span class="comment">/*因为需要首页并发量比较大，所以先进行查询缓存，需要进行try/catch</span></div><div class="line">  目的是为了防止进行查询缓存的过程中出现异常，不能影响到业务的正常进行*/</div><div class="line">    String json =   jedisClient.hget(<span class="string">"CONTENT_LIST"</span>,categoryId+ <span class="string">""</span>);</div><div class="line">    <span class="keyword">if</span> (StringUtils.isNotBlank(json)) &#123;</div><div class="line">      List&lt;TbContent&gt; list =  jsonUtils.jsonToList(json,TbContent.class);</div><div class="line">      <span class="comment">/*2.  查到结果，直接响应结果*/</span></div><div class="line">      <span class="keyword">return</span> list;</div><div class="line">    &#125;</div><div class="line">  &#125;<span class="keyword">catch</span> (Exception e) &#123;</div><div class="line">    e.printStackTrace();</div><div class="line">  &#125;</div></pre></td></tr></table></figure>
+</li>
+<li><p>查询不到，缓存中没有需要查询数据库</p>
+</li>
+<li><p>把查询结果添加到缓存中</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div><div class="line">2</div><div class="line">3</div><div class="line">4</div><div class="line">5</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">try</span> &#123;</div><div class="line">  jedisClient.hset(CONTENT_LIST,categoryId+<span class="string">""</span>,jsonUtils.ObjectToJson(list));</div><div class="line">&#125;<span class="keyword">catch</span> (Exception e) &#123;</div><div class="line">  e.printStackTrace();</div><div class="line">&#125;</div></pre></td></tr></table></figure>
+</li>
+<li><p>返回结果</p>
+</li>
+</ol>
+<p><strong>缓存同步</strong></p>
+<p>如果再后台进行更改操作的时候，要先将redis中的缓存清理掉，然后在前台进行操作又重新添加到缓存中，从而进行更新</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line">jedisClient.hdel(CONTENT_LIST,categoryId + <span class="string">""</span>);</div></pre></td></tr></table></figure>
+</div><script type="text/javascript" src="/js/share.js?v=0.0.0" async></script><a data-url="http://yoursite.com/2016/11/22/redis/" data-id="cj4cm4vb20007douzjbq2fzyh" class="article-share-link">分享</a><div class="tags"><a href="/tags/Redis缓存/">Redis缓存</a></div><div class="post-nav"><a href="/2017/06/25/新的开始/" class="pre">新的开始</a><a href="/2016/10/09/springmvc-2/" class="next">SpringMVC高级教程</a></div></div></div></div><div class="pure-u-1-4 hidden_mid_and_down"><div id="sidebar"><div class="widget"><form action="//www.google.com/search" method="get" accept-charset="utf-8" target="_blank" class="search-form"><input type="text" name="q" maxlength="20" placeholder="Search"/><input type="hidden" name="sitesearch" value="http://yoursite.com"/></form></div><div class="widget"><div class="widget-title"><i class="fa fa-folder-o"> 分类</i></div><ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/技术/">技术</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/数据库/">数据库</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/经历/">经历</a></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-star-o"> 标签</i></div><div class="tagcloud"><a href="/tags/性能优化/" style="font-size: 15px;">性能优化</a> <a href="/tags/框架/" style="font-size: 15px;">框架</a> <a href="/tags/Oracle/" style="font-size: 15px;">Oracle</a> <a href="/tags/Redis缓存/" style="font-size: 15px;">Redis缓存</a> <a href="/tags/国家电网开发/" style="font-size: 15px;">国家电网开发</a></div></div><div class="widget"><div class="widget-title"><i class="fa fa-file-o"> 最近文章</i></div><ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2017/06/25/新的开始/">新的开始</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/11/22/redis/">Redis</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/09/springmvc-2/">SpringMVC高级教程</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/06/springmvc/">Springmvc</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/06/oracle2/">Sracle(2)</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/10/02/Java编程性能优化/">Java编程性能优化</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/09/29/oracle01/">Oracle(1)</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/07/26/struts/">参数获得方式_action生命周期&线程安全&MVC</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/07/25/Struts2_01/">Struts2</a></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-external-link"> 友情链接</i></div><ul></ul><a href="http://www.google.com/" title="抢沙发啦~ ~ ~" target="_blank">抢沙发啦~ ~ ~</a></div></div></div><div class="pure-u-1 pure-u-md-3-4"><div id="footer">Copyright © 2017 <a href="/." rel="nofollow">张昭林的个人站.</a> Powered by<a rel="nofollow" target="_blank" href="https://hexo.io"> Hexo.</a><a rel="nofollow" target="_blank" href="https://github.com/tufu9441/maupassant-hexo"> power</a> by<a rel="nofollow" target="_blank" href="https://github.com/pagecho"> ZhangZhaoLin.</a></div></div></div><a id="rocket" href="#top" class="show"></a><script type="text/javascript" src="/js/totop.js?v=0.0.0" async></script><script type="text/javascript" src="//cdn.bootcss.com/fancybox/3.0.47/jquery.fancybox.min.js" async></script><script type="text/javascript" src="/js/fancybox.js?v=0.0.0" async></script><link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/fancybox/3.0.47/jquery.fancybox.min.css"><script type="text/javascript" src="/js/codeblock-resizer.js?v=0.0.0"></script><script type="text/javascript" src="/js/smartresize.js?v=0.0.0"></script></div></body></html>
