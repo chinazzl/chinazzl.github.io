@@ -1,0 +1,100 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta http-equiv="content-type" content="text/html; charset=utf-8"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"><meta content="telephone=no" name="format-detection"><meta name="description"><title>Oracle01 | 张昭林的个人站</title><link rel="stylesheet" type="text/css" href="/css/style.css?v=0.0.0"><link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/normalize/6.0.0/normalize.min.css"><link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/pure/0.6.2/pure-min.css"><link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/pure/0.6.2/grids-responsive-min.css"><link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css"><script type="text/javascript" src="//cdn.bootcss.com/jquery/3.2.1/jquery.min.js"></script><link rel="Shortcut Icon" type="image/x-icon" href="/favicon.ico"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="apple-touch-icon-precomposed" href="/apple-touch-icon.png"></head><body><div class="body_container"><div id="header"><div class="site-name"><h1 class="hidden">Oracle01</h1><a id="logo" href="/.">张昭林的个人站</a><p class="description">Only in the darkness can you see the stars</p></div><div id="nav-menu"><a href="/." class="current"><i class="fa fa-home"> 首页</i></a><a href="/archives/"><i class="fa fa-archive"> 归档</i></a><a href="/history/"><i class="fa fa-book"> 生涯</i></a><a href="/about/"><i class="fa fa-user"> 关于</i></a><a href="/atom.xml"><i class="fa fa-rss"> 订阅</i></a></div></div><div id="layout" class="pure-g"><div class="pure-u-1 pure-u-md-3-4"><div class="content_container"><div class="post"><h1 class="post-title">Oracle01</h1><div class="post-meta">Sep 29, 2016<span> | </span><span class="category"><a href="/categories/Oracle/">Oracle</a></span><script src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js" async></script><span id="busuanzi_container_page_pv"> | <span id="busuanzi_value_page_pv"></span><span> 阅读</span></span></div><div class="post-content"><h1 id="Oracle"><a href="#Oracle" class="headerlink" title="Oracle"></a>Oracle</h1><blockquote>
+<p>oracle数据库系统是美国oracle公司（甲骨文）提供的以分布式数据库为核心的一组软件产品，是目前最流行的C/S或B/S体系结构的数据库之一，比如Silver Stream就是基于数据库的一种中间件。oracle数据库是目前世界上使用最广泛的数据库管理系统，它具有完整的数据管理功能：作为一个关系型数据库，它是一个完备关系的产品：作为分布式数据库它实现了分布式处理功能。</p>
+</blockquote>
+<p><strong>Oracle10g的安装</strong></p>
+<p>因为要在自己的本机学习Oracle，所以在虚拟机进行安装，win7/8/10有可能出现不可预知的错误，首先安装Win xp</p>
+<ul>
+<li>打开oracle的setup.exe,主目录对应位置默认即可， 输入数据库口令，并输入确认口令，勾选创建启动数据库，其他不变</li>
+<li>准备安装界面</li>
+<li>选择用户已验证==&gt;下一步==&gt;安装</li>
+<li>经过一系列安装，点击口令管理后，给scott和hr设定密码</li>
+<li>scott/tiger</li>
+<li>hr/hr</li>
+<li>安装结束</li>
+</ul>
+<h3 id="Oracle是关系型数据库"><a href="#Oracle是关系型数据库" class="headerlink" title="Oracle是关系型数据库"></a>Oracle是关系型数据库</h3><p>我们基于数据模型所提出的数据库叫做关系型数据库。</p>
+<p>关系模型：我们有一张二维表，行和列的一种方式来保存数据叫做关系模型</p>
+<h3 id="Oracle数据库的体系结构"><a href="#Oracle数据库的体系结构" class="headerlink" title="Oracle数据库的体系结构"></a>Oracle数据库的体系结构</h3><ul>
+<li>数据库：database<ul>
+<li>oracle数据库是数据的物理存储。这就包括（数据文件ORA或者DBF、控制文件、联机日志、参数文件）。其实Oracle数据库的概念和其他数据库不一样，这里的数据库是一个操作系统只有一个库。可以看作是Oracle就只有一个大数据库</li>
+</ul>
+</li>
+<li>实例：<ul>
+<li>一个Oracle实例（Oracle Instance）有一系列的后台进程（Background Process）和内存结构（Memory Structures）组成。一个数据库可以有n个实例。</li>
+</ul>
+</li>
+<li>数据文件（dbf）<ul>
+<li>数据文件是数据库的物理存储单位。数据库的数据是存储在表空间中的，真正是在某一个或者多个数据文件中。而一个表空间可以由一个或多个数据文件组成，一个数据文件只能属于一个表空间。一旦数据文件被加入到某个表空间后，就不能删除这个文件，<code>如果要删除某个数据文件，之恩那个删除其所属的表空间才行</code></li>
+</ul>
+</li>
+<li>表空间：<ul>
+<li>表空间是Oracle对物理数据库上相关数据文件（ORA或者DBF文件）的逻辑映射，一个数据库在逻辑上被划分成一到若干个表空间，每个表空间包含了在逻辑上相关的一组结构。每个数据库至少有一个表空间（称之为system表空间）。</li>
+<li>每个表空间由同一磁盘上的一个或多个文件组成，这些文件叫数据文件(datafile)。<code>一个数据文件只能属于一个表空间</code>。</li>
+</ul>
+</li>
+<li>用户：<ul>
+<li>用户是在实例下建立的。不同实例中可以建相同名字的用户。</li>
+<li>表的数据，是由用户放入某个表空间的，而这个表空间会随机把这些表数据放到一个或者多个数据文件中。</li>
+</ul>
+</li>
+</ul>
+<p><strong>由于oracle的数据库不是普通的概念，oracle是有用户和表空间对数据进行管理和存放的。但是表不是有表空间去查询的，而是由用户去查的。因为i不同用户可以在同一个表空间建立同一个名字的表！这里区分就是用户了</strong></p>
+<h3 id="基本查询"><a href="#基本查询" class="headerlink" title="基本查询"></a>基本查询</h3><ol>
+<li><p>查询语法：Select * |列名 from表名</p>
+ <figure class="highlight sql"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">select</span> * <span class="keyword">from</span> tab;</div></pre></td></tr></table></figure>
+<p> <img src="/img/oraclePic/check.jpg" alt="oracleselect"></p>
+</li>
+<li><p>别名的用法:在查询的结果中可以使用别名</p>
+<ul>
+<li><p>sql优化原则：尽量使用别名</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">select</span> empno 部门编号， ename 部门名称 <span class="keyword">from</span> emp;</div></pre></td></tr></table></figure>
+<p><code>别名中，有没有双引号的区别就在于别名中有没有特殊的符号或者关键字</code><br><img src="/img/oraclePic/biehao.jpg" alt="biehao"><br><img src="/img/oraclePic/biehao2.jpg" alt="biehao"></p>
+</li>
+</ul>
+</li>
+<li><p>消除重复的数据</p>
+ <figure class="highlight sql"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">select</span> * | 列名 <span class="keyword">from</span> 表名;</div></pre></td></tr></table></figure>
+<p> <img src="/img/oraclePic/distinct1.jpg" alt="distinct1"><br> <img src="/img/oraclePic/distinct2.jpg" alt="distinct1"></p>
+</li>
+<li><p>查询的四则运算</p>
+ <figure class="highlight sql"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">select</span> ename,sal,sal*<span class="number">12</span> <span class="keyword">from</span> emp;</div></pre></td></tr></table></figure>
+<p> <img src="/img/oraclePic/sizeyunsuan1.jpg" alt="sizeyunsuan"><br> <img src="/img/oraclePic/sizeyunsuan2.jpg" alt="sizeyunsuan">    </p>
+</li>
+</ol>
+<p><strong>什么是空值</strong></p>
+<ul>
+<li>空值是无效的，未指定的，位置的或不可预知的值</li>
+<li>空值不是空格或者0</li>
+<li><strong style="color:red">注意：包含null的表达式都为null</strong></li>
+<li><strong style="color:red">空值永远不等于空值</strong></li>
+</ul>
+<p><strong>连接符||</strong></p>
+<ul>
+<li><p>字符串连接查询</p>
+  <figure class="highlight sql"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">select</span> <span class="string">'hello'</span> || <span class="string">' world'</span> example <span class="keyword">from</span> dual;</div></pre></td></tr></table></figure>
+<p>  其中dual是伪表<br>  <img src="/img/oraclePic/lianjiefu.jpg" alt="lianjiefu"></p>
+  <figure class="highlight sql"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">select</span> ename || <span class="string">' 的年薪为'</span> || sal*<span class="number">12</span> <span class="keyword">from</span> emp;</div></pre></td></tr></table></figure>
+<p>  <img src="/img/oraclePic/lianjiefu2.jpg" alt="lianjiefu2"></p>
+</li>
+</ul>
+<p><strong>条件查询</strong></p>
+<ul>
+<li><p>查询10号部门的员工</p>
+  <figure class="highlight sql"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">select</span> * <span class="keyword">from</span> emp <span class="keyword">where</span> deptno=<span class="number">10</span>;</div></pre></td></tr></table></figure>
+<p>  <img src="/img/oraclePic/tiaojianchaxun1.jpg" alt="tiaojian"></p>
+</li>
+<li><p>查询不是10号和20号部门的员工</p>
+  <figure class="highlight sql"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">select</span> * <span class="keyword">from</span> emp <span class="keyword">where</span> deptno <span class="keyword">not</span> <span class="keyword">in</span>(<span class="number">10</span>,<span class="number">20</span>);</div></pre></td></tr></table></figure>
+<p>  <img src="/img/oraclePic/tiaojianchaxun2.jpg" alt="tiaojian"><br>  <code>如果集合中含有null，不能使用not in，但是可以使用in</code></p>
+  <figure class="highlight sql"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">select</span> * <span class="keyword">from</span> emp <span class="keyword">where</span> deptno <span class="keyword">in</span>(<span class="number">10</span>,<span class="number">20</span>,<span class="literal">null</span>);</div></pre></td></tr></table></figure>
+<p>  <img src="/img/oraclePic/tiaojianchaxunnull.jpg" alt="tiaojianchaxunnull"></p>
+</li>
+</ul>
+<p><strong>模糊查询</strong></p>
+<ul>
+<li><p>查询名字以s开头的员工</p>
+  <figure class="highlight sql"><table><tr><td class="gutter"><pre><div class="line">1</div></pre></td><td class="code"><pre><div class="line"><span class="keyword">select</span> * <span class="keyword">from</span> emp <span class="keyword">where</span> ename <span class="keyword">like</span> <span class="string">'S%'</span>;</div></pre></td></tr></table></figure>
+<p>  <img src="/img/oraclePic/mohuchaxun.jpg" alt="mohuchaxun"></p>
+</li>
+</ul>
+</div><script type="text/javascript" src="/js/share.js?v=0.0.0" async></script><a data-url="http://yoursite.com/2016/09/29/oracle01/" data-id="cj4chyu5d0000c0uzdy0cempn" class="article-share-link">分享</a><div class="tags"><a href="/tags/Oracle/">Oracle</a></div><div class="post-nav"><a href="/2017/06/25/新的开始/" class="pre">新的开始</a></div></div></div></div><div class="pure-u-1-4 hidden_mid_and_down"><div id="sidebar"><div class="widget"><form action="//www.google.com/search" method="get" accept-charset="utf-8" target="_blank" class="search-form"><input type="text" name="q" maxlength="20" placeholder="Search"/><input type="hidden" name="sitesearch" value="http://yoursite.com"/></form></div><div class="widget"><div class="widget-title"><i class="fa fa-folder-o"> 分类</i></div><ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Oracle/">Oracle</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/经历/">经历</a></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-star-o"> 标签</i></div><div class="tagcloud"><a href="/tags/国家电网开发/" style="font-size: 15px;">国家电网开发</a> <a href="/tags/Oracle/" style="font-size: 15px;">Oracle</a></div></div><div class="widget"><div class="widget-title"><i class="fa fa-file-o"> 最近文章</i></div><ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2017/06/25/新的开始/">新的开始</a></li><li class="post-list-item"><a class="post-list-link" href="/2016/09/29/oracle01/">Oracle01</a></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-external-link"> 友情链接</i></div><ul></ul><a href="http://www.google.com/" title="抢沙发啦~ ~ ~" target="_blank">抢沙发啦~ ~ ~</a></div></div></div><div class="pure-u-1 pure-u-md-3-4"><div id="footer">Copyright © 2017 <a href="/." rel="nofollow">张昭林的个人站.</a> Powered by<a rel="nofollow" target="_blank" href="https://hexo.io"> Hexo.</a><a rel="nofollow" target="_blank" href="https://github.com/tufu9441/maupassant-hexo"> power</a> by<a rel="nofollow" target="_blank" href="https://github.com/pagecho"> ZhangZhaoLin.</a></div></div></div><a id="rocket" href="#top" class="show"></a><script type="text/javascript" src="/js/totop.js?v=0.0.0" async></script><script type="text/javascript" src="//cdn.bootcss.com/fancybox/3.0.47/jquery.fancybox.min.js" async></script><script type="text/javascript" src="/js/fancybox.js?v=0.0.0" async></script><link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/fancybox/3.0.47/jquery.fancybox.min.css"><script type="text/javascript" src="/js/codeblock-resizer.js?v=0.0.0"></script><script type="text/javascript" src="/js/smartresize.js?v=0.0.0"></script></div></body></html>
