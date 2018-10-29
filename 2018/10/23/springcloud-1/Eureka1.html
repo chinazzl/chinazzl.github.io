@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Eureka</title>
+</head>
+<body>
+<h1>NetFlix Eureka是由NetFlix公司开源的一款基于REST的服务发现组件，包括Eureka Server和Eureka Client</h1>
+
+<h2 style="color: blue;">Eureka入门案例</h2>
+
+<p  style="text-indent: 2em">Maven父级工程pom.xml</p> 
+
+<xmp>
+	<parent>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-parent</artifactId>
+    <version>2.0.3.RELEASE</version>
+    <relativePath/> <!-- lookup parent from repository -->
+  </parent>
+
+
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+    <java.version>1.8</java.version>
+    <spring-cloud.version>Finchley.RELEASE</spring-cloud.version>
+  </properties>
+
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.springframework.cloud</groupId>
+        <artifactId>spring-cloud-dependencies</artifactId>
+        <version>${spring-cloud.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
+  <dependencies>
+    <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-web</artifactId>
+    </dependency>
+
+    <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-test</artifactId>
+        <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>4.11</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+</xmp>
+	
+
+
+<p>创建Eureka Server工程`pom.xml`</p>
+
+<xmp>
+	<properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <java.version>1.8</java.version>
+        <spring-cloud.version>Finchley.RELEASE</spring-cloud.version>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-netflix-eureka-server</artifactId>
+        </dependency>
+    </dependencies>
+</xmp>
+
+
+
+<p>Eureka Server 的启动入口</p>
+<code>
+	@SpringBootApplication<br/>
+	@EnableEurekaServer<br/>
+	public class EureakServer {<br/>
+		public static void main(String[] args) {<br/>
+			SpringApplication.run(EureakServer.class,args);<br/>
+		}<br/>
+	}<br/>
+</code>
+
+
+ <p>Server 的application.yml， application-standalone.yml</p>
+
+<xmp>
+	spring:
+	  profiles:
+	    active: standalone
+	  jackson:
+	    serialization:
+	      FAIL_ON_EMPTY_BEANS: false
+	eureka:
+	  server:
+	    use-read-only-response-cache: false
+	    response-cache-auto-expiration-in-seconds: 10
+	management:
+	  endpoints:
+	    web:
+	      exposure:
+	        include: '*'
+	<!----------standAlone--------->
+	server:
+  port: 8761
+
+eureka:
+  instance:
+    hostname: localhost
+  client:
+    registerWithEureka: false
+    fetchRegistry: false
+    serviceUrl:
+      defaultZone: http://${eureka.instance.hostname}:${server.port}/eureka/
+  server:
+      waitTimeInMsWhenSyncEmpty: 0
+      enableSelfPreservation: false
+</xmp>
+
+
+
+<p>创建Eureka Client工程`pom.xml`</p>
+
+<xmp>
+	<dependencies>
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
+        </dependency>
+    </dependencies>
+</xmp>
+
+<p>Eureka Client的启动类</p>
+
+ <code>
+  @SpringBootApplication<br/>
+  @EnableDiscoveryClient<br/>
+  public class EurekaClient{<br/>
+  	public static void main(String[] args) {<br/>
+  		SpringApplication.run(EurekaClient.class,args);<br/>
+  	}<br/>
+  }<br/>
+ </code>
+
+<p>配置清单  application-demo.yml</p>
+
+<xmp>
+	server:
+  port: 8081
+
+spring:
+  application:
+    name: demo-client1
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZ one: http://localhost:8761/eureka/
+</xmp>
+
+<p> 效果展示</p><br>
+ <span>分别启动 `EurekaServer和Eureka Client`的主方法，访问`http://locahost:8761`就会看到Eureka的主界面，明天学习Eureka的一些接口方法</span>
+</body>
+</html>
