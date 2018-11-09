@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Eureka在线扩容</title>
+	<style type="text/css">
+		.title {
+			font-size: 20px;
+
+		}
+		.warn {
+			list-style-type: decimal;
+			color: red;
+		}
+	</style>
+</head>
+<body>
+
+<h1>Eureka在线扩容</h1>
+<ul>
+<li class="title">Peer to Peer架构</li>
+<p style="text-indent: 2em">对等复制：副本之间部分主从，任何副本都可以接受写操作，然后每个副本之间相互进行数据更新</p>
+<p style="text-indent: 2em">对于对等复制来讲，由于任何副本都可以接受写操作请求，不存在写操作压力瓶颈。但是由于每个副本都可以进行写操作处理，各个副本之间的数据同步及冲突处理是一个棘手问题。</p>
+<p style="text-indent: 2em;color: red">Eureka Server采用的就是Peer to Peer的复制模式</p>
+<li class="title">Eureka的在线扩容</li>
+<p style="text-indent: 2em">使用Maven构建parent pom</p>
+</ul>
+<ul>
+	<li>parent Model --> pom.xml</li>
+	<div style="border: 1px solid red">
+<xmp>
+	<!--POM.xml-->
+	<properties>
+	    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	    <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+	    <java.version>1.8</java.version>
+	    <spring-cloud.version>Finchley.RELEASE</spring-cloud.version>
+    </properties>
+
+	  <dependencyManagement>
+	    <dependencies>
+	      <dependency>
+	        <groupId>org.springframework.cloud</groupId>
+	        <artifactId>spring-cloud-dependencies</artifactId>
+	        <version>${spring-cloud.version}</version>
+	        <type>pom</type>
+	        <scope>import</scope>
+	      </dependency>
+	    </dependencies>
+	  </dependencyManagement>
+
+	  <dependencies>
+	    <dependency>
+	      <groupId>org.springframework.boot</groupId>
+	      <artifactId>spring-boot-starter-actuator</artifactId>
+	    </dependency>
+	    <dependency>
+	      <groupId>org.springframework.boot</groupId>
+	      <artifactId>spring-boot-starter-web</artifactId>
+	    </dependency>
+	    <dependency>
+	        <groupId>org.springframework.boot</groupId>
+	        <artifactId>spring-boot-starter-test</artifactId>
+	        <scope>test</scope>
+	    </dependency>
+	  </dependencies>
+</xmp>
+</div>
+<li>eureka-server Model --> pom.xml</li>
+<div style="border: 1px solid red">
+<xmp>
+	 <dependencies>
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-netflix-eureka-server</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-config</artifactId>
+        </dependency>
+    </dependencies>
+</xmp>
+</div>
+	<ul>
+		<li>resources:
+			<div style="border: 1px solid red">
+			<xmp>
+				# bootstrap.yml
+				spring:
+				  application:
+				    name: eureka-server
+				  cloud:
+				    config:
+				      uri: http://localhost:8888
+				management:
+				  endpoints:
+				    web:
+				      exposure:
+				        include: '*'
+				# application.yml
+				eureka:
+				  server:
+				    peer-eureka-nodes-update-interval-ms: 10000 #默认是10分钟即600000，这里为了验证改为10秒
+			</xmp>
+		</div>
+		</li>
+		<li>src 启动类
+			<div style="border: 1px solid red">
+			<code></br>
+				@SpringBootApplication</br>
+				@EnableEurekaServer</br>
+				public class EurekaServerApplication {</br>
+
+				    public static void main(String[] args) {</br>
+				        SpringApplication.run(EurekaServerApplication.class, args);</br>
+				    }</br>
+				}</br>
+
+			</code>
+		</div>
+		</li>
+		<li>定义一个Controller，此接口看扩容的url
+			<div style="border: 1px solid red">
+			<code></br>
+				@RestController</br>
+				@RequestMapping("/query")</br>
+				public class QueryController {</br>
+				    @Autowired</br>
+				    EurekaClientConfigBean eurekaClientConfigBean;</br>
+
+				    @GetMapping("/eureka-server")</br>
+				    public Object getEurekaServerUrl(){</br>
+				        return eurekaClientConfigBean.getServiceUrl();</br>
+				    }</br>
+				}</br>
+
+			</code>
+		</div>
+		</li>
+	</ul>
+	<li>eureka-client Model --> pom.xml</li>
+	<div style="border: 1px solid red">
+<xmp>
+	 <dependencies>
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-config</artifactId>
+        </dependency>
+    </dependencies>
+</xmp>
+</div>
+	<ul>
+		<li>resources:
+			<div style="border: 1px solid red">
+			<xmp>
+				# bootstrap.yml
+				spring:
+				  application:
+				    name: eureka-client
+				  cloud:
+				    config:
+				      uri: http://localhost:8888
+				management:
+				  endpoints:
+				    web:
+				      exposure:
+				        include: '*'
+				# application.yml
+				eureka:
+				  client:
+				    eureka-service-url-poll-interval-seconds: 10 #默认为300秒，这里为了验证改为10秒
+			</xmp>
+		</div>
+		</li>
+		<li>src 启动类
+			<div style="border: 1px solid red">
+			<code></br>
+				@SpringBootApplication</br>
+				@@EnableDiscoveryClient</br>
+				public class EurekaClientApplication {</br>
+
+				    public static void main(String[] args) {</br>
+				        SpringApplication.run(EurekaClientApplication.class, args);</br>
+				    }</br>
+				}</br>
+
+			</code>
+		</div>
+		</li>
+		<li>定义一个Controller，此接口看扩容的url
+			<div style="border: 1px solid red">
+			<code></br>
+				@RestController</br>
+				@RequestMapping("/query")</br>
+				public class QueryController {</br>
+				    @Autowired</br>
+				    EurekaClientConfigBean eurekaClientConfigBean;</br>
+
+				    @GetMapping("/eureka-server")</br>
+				    public Object getEurekaServerUrl(){</br>
+				        return eurekaClientConfigBean.getServiceUrl();</br>
+				    }</br>
+				}</br>
+
+			</code>
+		</div>
+		</li>
+	</ul>
+	<li>eureka-configServer Model用于动态修改配置，所以引入此工程 --> pom.xml</li>
+	<div style="border: 1px solid red">
+<xmp>
+	  <dependencies>
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-config-server</artifactId>
+        </dependency>
+    </dependencies>
+</xmp>
+</div>
+	<ul>
+		<li>resources:
+			<div style="border: 1px solid red">
+			<xmp>
+				# bootstrap.yml
+					spring:
+					  application:
+					    name: config-server
+					  profiles:
+					    active: native # 使用native的profiles，即使用文件来存储配置，默认放在resources下的config文件夹下
+					server:
+					  port: 8888
+				# config/eureka-client.yml
+					server:
+					  port: 8081
+
+					spring:
+					  application:
+					    name: eureka-client1
+
+					eureka:
+					  client:
+					    serviceUrl:
+					#      defaultZone: http://localhost:8761/eureka/ # one eureka server
+					#      defaultZone: http://localhost:8761/eureka/,http://localhost:8762/eureka/ # two eureka server
+					      defaultZone: http://localhost:8761/eureka/,http://localhost:8762/eureka/,http://localhost:8763/eureka/ # three eureka server
+				# config/eureka-server-peer1.yml
+					server:
+					  port: 8761
+
+					spring:
+					  application:
+					    name: eureka-server
+					eureka:
+					  instance:
+					    hostname: localhost
+					    preferIpAddress: true
+					  client:
+					    registerWithEureka: true
+					    fetchRegistry: true
+					    serviceUrl:
+					#      defaultZone: http://localhost:8761/eureka/ # one eureka server
+					#      defaultZone: http://localhost:8762/eureka/ # two eureka server
+					      defaultZone: http://localhost:8762/eureka/,http://localhost:8763/eureka/ # three eureka server
+					  server:
+					      waitTimeInMsWhenSyncEmpty: 0
+					      enableSelfPreservation: false
+				# config/eureka-server-peer2.yml
+					server:
+					  port: 8762
+
+					eureka:
+					  instance:
+					    hostname: localhost
+					    preferIpAddress: true
+					  client:
+					    registerWithEureka: true
+					    fetchRegistry: true
+					    serviceUrl:
+					#      defaultZone: http://localhost:8761/eureka/ # two eureka server
+					      defaultZone: http://localhost:8761/eureka/,http://localhost:8763/eureka/ # three eureka server
+					  server:
+					      waitTimeInMsWhenSyncEmpty: 0
+					      enableSelfPreservation: false
+				# config/eureka-server-peer3.yml
+					server:
+					  port: 8763
+
+					eureka:
+					  instance:
+					    hostname: localhost
+					    preferIpAddress: true
+					  client:
+					    registerWithEureka: true
+					    fetchRegistry: true
+					    serviceUrl:
+					      defaultZone: http://localhost:8761/eureka/,http://localhost:8762/eureka/ # three eureka server
+					  server:
+					      waitTimeInMsWhenSyncEmpty: 0
+					      enableSelfPreservation: false
+		</xmp>
+		</div>	
+		</li>
+		<li>src 启动类
+			<div style="border: 1px solid red">
+				<code></br>
+				@SpringBootApplication</br>
+				@EnableConfigServer</br>
+				public class ConfigServiceRunner {</br>
+
+				    public static void main(String[] args) {</br>
+				        SpringApplication.run(ConfigServiceRunner.class, args);</br>
+				    }</br>
+				}</br>
+
+			</code>
+			</div>
+			
+		</li>
+	</ul>
+</ul>
+<p><strong>注意：</strong></p>
+<ul class='warn'>
+	<li>ConfigServer工程的配置文件命名方法<em>{application}-{profiles}-{active}</em>></li>
+	<li>各个工程配置完毕，例如配置第一个节点peer1后，启动完毕，进行配置第二个节点eureka-server-peer2,启动第二个节点，使用<strong>mvn spring-boot:run -Dspring.profiles.active=peer2</strong></li>
+	<li>如果修改Config-Server后，需要进行刷新，<a href="javascript:void">http://localhost:8761/actuator/refresh</a></li>
+	<li>进行查看实例：<a href="javascript:void">http://localhost:8761/</a></li>
+	<li>进行查看扩容地址：<a href="javascript:void">http:localhost:8761/query/eureka-server</a></li>
+</ul>
+<p>这个例子需要依赖配置中心的动态刷新功能，具体是/actuator/refresh这个endpoint。这里为了方便，使用的config-server是native的profile，因此修改后需要重启生效，如果这个使用git仓库，则无需重启config-server</p>
+</body>
+</html>
